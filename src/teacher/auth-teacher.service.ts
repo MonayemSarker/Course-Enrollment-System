@@ -31,6 +31,7 @@ export class AuthTeacherService {
       signinDto.email,
       signinDto.password,
     );
+    console.log('auth teacher user' + teacher);
     return teacher;
   }
 }

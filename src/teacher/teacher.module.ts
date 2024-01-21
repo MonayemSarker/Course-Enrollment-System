@@ -4,10 +4,12 @@ import { TeacherService } from './teacher.service';
 import { Teacher } from './teacher.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthTeacherService } from './auth-teacher.service';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './local.startegy';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Teacher])],
+  imports: [TypeOrmModule.forFeature([Teacher]), PassportModule],
   controllers: [TeacherController],
-  providers: [TeacherService, AuthTeacherService]
+  providers: [TeacherService, AuthTeacherService, LocalStrategy],
 })
 export class TeacherModule {}

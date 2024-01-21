@@ -40,6 +40,8 @@ export class TeacherService {
     if (user.password != password) {
       throw new UnauthorizedException('invalid password');
     }
+
+    console.log('teacher service user' + user);
     return user;
   }
 }
