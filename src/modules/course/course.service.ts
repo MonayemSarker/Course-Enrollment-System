@@ -19,14 +19,14 @@ export class CourseService {
     newCourse.isPublished = false;
     newCourse.teacher = teacher;
 
-    console.log(newCourse);
+    // console.log(newCourse);
 
     return this.repo.save(newCourse);
   }
 
   async findCourse(id: number) {
     const course = await this.repo.findOneBy({ courseCode: id });
-    console.log(course.teacher);
+    console.log(course);
 
     return course;
   }

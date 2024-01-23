@@ -4,6 +4,7 @@ import { Teacher } from './teacher.entity';
 import { Repository } from 'typeorm';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { Course } from '../course/course.entity';
 
 @Injectable()
 export class TeacherService {
@@ -27,4 +28,13 @@ export class TeacherService {
     const teacher = await this.repo.findOneBy({ id: id });
     return teacher;
   }
+
+  // async setCourse(course: Course, id: number) {
+  //   const teacher = await this.repo.findOneBy({ id: id });
+  //   if (!teacher) {
+  //     throw new NotFoundException('No Teacher found with id' + { id });
+  //   }
+  //   teacher.courses.push(course);
+  //   return this.repo.save(teacher);
+  // }
 }

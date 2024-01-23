@@ -15,6 +15,7 @@ import { AccessTokenGuard } from '../user/guard/accessToken.guard';
 import { Request } from 'express';
 import { TeacherService } from '../teacher/teacher.service';
 import { PublishCourseDto } from './dto/publish-course.dto';
+import { parse } from 'path';
 
 @Controller('course')
 export class CourseController {
@@ -31,6 +32,7 @@ export class CourseController {
     // console.log(teacher);
 
     const course = await this.courseService.create(body, teacher);
+    // await this.teacherService.setCourse(course, parseInt(teacherId));
     return course;
   }
 

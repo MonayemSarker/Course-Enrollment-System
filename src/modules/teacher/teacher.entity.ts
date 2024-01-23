@@ -21,6 +21,6 @@ export class Teacher {
   @Column({ nullable: true })
   specialization: string;
 
-  @OneToMany(() => Course, (course) => course.teacher)
+  @OneToMany(() => Course, (course) => course.teacher, { cascade: ['insert'] })
   courses: Course[];
 }
