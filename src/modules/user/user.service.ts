@@ -45,6 +45,7 @@ export class UserService {
       throw new BadRequestException('User already exists');
     }
     const user = await this.repo.create(userDto);
+
     return this.repo.save(user);
   }
 

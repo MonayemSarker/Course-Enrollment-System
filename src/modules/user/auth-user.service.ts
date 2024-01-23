@@ -5,6 +5,10 @@ import { scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
+import { Teacher } from '../teacher/teacher.entity';
+import { TeacherService } from '../teacher/teacher.service';
+import { StudentService } from '../student/student.service';
+import { Student } from '../student/student.entity';
 
 const scrypt = promisify(_scrypt);
 const salt = 'AABBCC';
@@ -14,6 +18,8 @@ export class AuthUserService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private teacherService: TeacherService,
+    private studentService: StudentService,
   ) {}
 
   async create(userDto: CreateUserDto) {
@@ -24,6 +30,20 @@ export class AuthUserService {
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
+    if (newUser.userType === 'Teacher') {
+      const teacher = new Teacher();
+      teacher.id = newUser.id;
+      teacher.name = newUser.name;
+      teacher.email = newUser.email;
+      await this.teacherService.create(teacher);
+    } else if (newUser.userType === 'Student') {
+      const student = new Student();
+      student.id = newUser.id;
+      student.name = newUser.name;
+      student.email = newUser.email;
+      await this.studentService.create(student);
+    }
     return tokens;
   }
 

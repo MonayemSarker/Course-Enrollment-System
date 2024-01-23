@@ -23,7 +23,7 @@ import { User } from './modules/user/user.entity';
       username: 'root',
       password: 'admin',
       database: 'ces',
-      entities: [User],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
   ],

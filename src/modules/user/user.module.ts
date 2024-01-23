@@ -8,9 +8,16 @@ import { Repository } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategy/accesstoken.strategy';
 import { RefreshTokenStrategy } from './strategy/refreshtoken.strategy';
+import { TeacherModule } from '../teacher/teacher.module';
+import { StudentModule } from '../student/student.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({}),
+    TeacherModule,
+    StudentModule,
+  ],
   controllers: [UserController],
   providers: [
     UserService,
@@ -18,5 +25,6 @@ import { RefreshTokenStrategy } from './strategy/refreshtoken.strategy';
     AccessTokenStrategy,
     RefreshTokenStrategy,
   ],
+  exports: [AuthUserService],
 })
 export class UserModule {}
