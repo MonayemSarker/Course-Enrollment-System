@@ -14,6 +14,7 @@ import { SignInDto } from './dto/signin-user.dto';
 import { AuthUserService } from './auth-user.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from './guard/accessToken.guard';
+import { RefreshTokenGuard } from './guard/refreshToken.guard';
 
 @Controller('user')
 export class UserController {
@@ -53,5 +54,15 @@ export class UserController {
   @Get('whoAmI')
   isLoggedIn(@Req() req: Request) {
     return req.user;
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  refreshToken(@Req() req: Request) {
+    console.log(req.user);
+
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 }

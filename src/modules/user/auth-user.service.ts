@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { scrypt as _scrypt } from 'crypto';
@@ -76,5 +76,21 @@ export class AuthUserService {
   async updateRefreshToken(userId: number, refreshToken: string) {
     const hashedRefreshToken = await this.hashData(refreshToken);
     await this.userService.update(userId, hashedRefreshToken);
+  }
+
+  async refreshTokens(userId: number, refreshToken: string) {
+    const user = await this.userService.findById(userId);
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('Access denied');
+    }
+    const refreshTokenMatches = await argon2.verify(
+      user.refreshToken,
+      refreshToken,
+    );
+
+    if (!refreshTokenMatches) throw new ForbiddenException('Access denied');
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 }

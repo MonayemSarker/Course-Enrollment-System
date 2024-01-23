@@ -8,7 +8,7 @@ const JWT_REFRESH_TOKEN = 'This should be random token';
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
-  'jwt-secret',
+  'jwt-refresh',
 ) {
   constructor() {
     super({

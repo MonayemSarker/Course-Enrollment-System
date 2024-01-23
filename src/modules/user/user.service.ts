@@ -69,6 +69,14 @@ export class UserService {
     return this.repo.save(user);
   }
 
+  async findById(id: number) {
+    const user = await this.repo.findOneBy({ id: id });
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
+
   isLoggedIn() {}
 
   logout() {}
