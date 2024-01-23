@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Course } from '../course/course.entity';
 
 @Entity()
 export class Teacher {
@@ -20,6 +21,6 @@ export class Teacher {
   @Column({ nullable: true })
   specialization: string;
 
-  //   @OneToMany(() => Course, (course) => course.teacher)
-  //     courses: Course[]
+  @OneToMany(() => Course, (course) => course.teacher)
+  courses: Course[];
 }

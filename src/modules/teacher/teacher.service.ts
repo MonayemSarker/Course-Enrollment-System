@@ -22,4 +22,9 @@ export class TeacherService {
     await this.repo.merge(existingTeacher, updateTeacher);
     return this.repo.save(existingTeacher);
   }
+
+  async findTeacher(id: number) {
+    const teacher = await this.repo.findOneBy({ id: id });
+    return teacher;
+  }
 }
