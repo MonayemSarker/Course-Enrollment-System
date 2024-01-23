@@ -30,12 +30,15 @@ export class AuthUserService {
   async login(email: string, password: string) {
     const hash = ((await scrypt(password, salt, 16)) as Buffer).toString();
 
-    const user = await this.userService.findOne(email);
+    const user = await this.userService.findByEmail(email);
     console.log(user);
-    // const tokens = await this.getTokens(user.id, user.email);
-    // await this.updateRefreshToken(user.id, tokens.refreshToken);
-    // return tokens;
-    return user;
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
+  }
+
+  async logout(userId: number) {
+    return await this.userService.update(userId, null);
   }
 
   async getTokens(userId: number, email: string) {

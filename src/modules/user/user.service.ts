@@ -18,10 +18,22 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<User> {
+    console.log(id);
+
     const user = await this.repo.findOne({
       where: { id: parseInt(id) },
     });
     return user;
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    const user = await this.repo.find({
+      where: { email: email },
+    });
+    if (!user) {
+      throw new UnauthorizedException('No User found');
+    }
+    return user[0];
   }
 
   async create(userDto: CreateUserDto) {
