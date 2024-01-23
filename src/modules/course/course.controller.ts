@@ -47,9 +47,9 @@ export class CourseController {
     const teacher = await this.teacherService.findTeacher(parseInt(teacherId));
 
     const course = await this.courseService.findCourse(id);
-    console.log(course);
+    // console.log(course.teacher.id);
 
-    if (course[teacherId] != teacher.id) {
+    if (course.teacher.id != teacher.id) {
       throw new UnauthorizedException('Teacher Has No Permission to Edit');
     }
     await this.courseService.publish(course, body);

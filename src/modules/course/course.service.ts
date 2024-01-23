@@ -25,8 +25,12 @@ export class CourseService {
   }
 
   async findCourse(id: number) {
-    const course = await this.repo.findOneBy({ courseCode: id });
-    console.log(course);
+    const course = await this.repo.findOne({
+      where: { courseCode: id },
+      relations: ['teacher'],
+    });
+
+    // console.log('course', course);
 
     return course;
   }
