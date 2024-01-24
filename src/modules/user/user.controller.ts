@@ -59,7 +59,7 @@ export class UserController {
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   refreshToken(@Req() req: Request) {
-    console.log(req.user);
+    // console.log(req.user);
 
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];

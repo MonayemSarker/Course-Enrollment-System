@@ -43,4 +43,16 @@ export class TeacherService {
 
     return this.repo.save(teacher);
   }
+
+  async findCourses(id: number): Promise<Course[]> {
+    const teacher = await this.repo.findOne({
+      where: { id: id },
+      relations: ['courses'],
+    });
+    if (!teacher) {
+      throw new NotFoundException('No Teacher found with id' + { id });
+    }
+    const courses = teacher.courses;
+    return courses;
+  }
 }
