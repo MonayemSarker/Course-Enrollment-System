@@ -29,12 +29,18 @@ export class TeacherService {
     return teacher;
   }
 
-  // async setCourse(course: Course, id: number) {
-  //   const teacher = await this.repo.findOneBy({ id: id });
-  //   if (!teacher) {
-  //     throw new NotFoundException('No Teacher found with id' + { id });
-  //   }
-  //   teacher.courses.push(course);
-  //   return this.repo.save(teacher);
-  // }
+  async setCourse(course: Course, id: number) {
+    const teacher = await this.repo.findOne({
+      where: { id: id },
+      relations: ['courses'],
+    });
+    if (!teacher) {
+      throw new NotFoundException('No Teacher found with id' + { id });
+    }
+    teacher.courses = teacher.courses || [];
+    teacher.courses.push(course);
+    console.log(teacher);
+
+    return this.repo.save(teacher);
+  }
 }

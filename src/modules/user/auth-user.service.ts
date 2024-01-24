@@ -72,7 +72,7 @@ export class AuthUserService {
         },
         {
           secret: JWT_SECRET_KEY,
-          expiresIn: '10m',
+          expiresIn: '1h',
         },
       ),
       this.jwtService.signAsync(
