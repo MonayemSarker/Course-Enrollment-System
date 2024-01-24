@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SignInDto } from './dto/signin-user.dto';
@@ -15,7 +6,9 @@ import { AuthUserService } from './auth-user.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from './guard/accessToken.guard';
 import { RefreshTokenGuard } from './guard/refreshToken.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(
@@ -50,8 +43,10 @@ export class UserController {
   // findOne(@Param('id', ParseIntPipe) id: string) {
   //   return this.userService.findOne(id);
   // }
+
   @UseGuards(AccessTokenGuard)
   @Get('whoAmI')
+  @ApiBearerAuth()
   isLoggedIn(@Req() req: Request) {
     return req.user;
   }

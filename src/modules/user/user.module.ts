@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import { AuthUserService } from './auth-user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategy/accesstoken.strategy';
 import { RefreshTokenStrategy } from './strategy/refreshtoken.strategy';

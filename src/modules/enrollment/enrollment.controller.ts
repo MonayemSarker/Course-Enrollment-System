@@ -2,7 +2,9 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from '../user/guard/accessToken.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Enrollment')
 @Controller('enrollment')
 export class EnrollmentController {
   constructor(private enrollmentService: EnrollmentService) {}

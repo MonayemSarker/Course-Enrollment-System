@@ -14,7 +14,9 @@ import { AccessTokenGuard } from '../user/guard/accessToken.guard';
 import { Request } from 'express';
 import { EnrollmentService } from '../enrollment/enrollment.service';
 import { ApproveEnrollmentDto } from '../enrollment/dto/approve-enrollment.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Teacher')
 @Controller('teacher')
 export class TeacherController {
   constructor(
