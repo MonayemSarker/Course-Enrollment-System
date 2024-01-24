@@ -7,6 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Teacher } from '../teacher/teacher.entity';
+import { Enrollment } from '../enrollment/enrollment.entity';
 
 @Entity()
 export class Course {
@@ -29,6 +30,6 @@ export class Course {
   @JoinColumn({ name: 'teacherId' })
   teacher: Teacher;
 
-  // @OneToMany( () => Enrollment, (enrollment) => enrollment.course )
-  // enrollments: Enrollment[]
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  enrollments: Enrollment[];
 }

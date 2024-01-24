@@ -22,4 +22,9 @@ export class StudentService {
     await this.repo.merge(existingStudent, updateStudent);
     return this.repo.save(existingStudent);
   }
+
+  async findStudent(id: number) {
+    const student = await this.repo.findOneBy({ id: id });
+    return student;
+  }
 }

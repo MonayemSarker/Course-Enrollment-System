@@ -35,8 +35,24 @@ export class CourseService {
     return course;
   }
 
+  async findPublishedCourse(id: number) {
+    const course = await this.repo.findOne({
+      where: { courseCode: id, isPublished: true },
+      relations: ['teacher'],
+    });
+    return course;
+  }
+
   async publish(course: Course, publishDto: PublishCourseDto) {
     await this.repo.merge(course, publishDto);
     return this.repo.save(course);
+  }
+
+  async getPublishedCourses() {
+    const courses = await this.repo.find({
+      where: { isPublished: true },
+      relations: ['teacher'],
+    });
+    return courses;
   }
 }

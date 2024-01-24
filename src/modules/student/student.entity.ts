@@ -1,4 +1,5 @@
 import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
+import { Enrollment } from '../enrollment/enrollment.entity';
 
 @Entity()
 export class Student {
@@ -20,6 +21,6 @@ export class Student {
   @Column({ nullable: true })
   grade: number;
 
-  // @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
-  // enrollments: Enrollment[];
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  enrollments: Enrollment[];
 }
