@@ -5,11 +5,11 @@ import { AccessTokenGuard } from '../user/guard/accessToken.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Enrollment')
-@Controller('enrollment')
+@Controller('enrollments')
 export class EnrollmentController {
   constructor(private enrollmentService: EnrollmentService) {}
 
-  @Get('')
+  @Get()
   findAll() {
     return this.enrollmentService.findAll();
   }
@@ -18,6 +18,6 @@ export class EnrollmentController {
   @Get('myEnrollments')
   studentEnrollment(@Req() req: Request) {
     const studentId = req.user['sub'];
-    return this.enrollmentService.studentEnrollment(parseInt(studentId));
+    return this.enrollmentService.getStudentEnrollments(parseInt(studentId));
   }
 }

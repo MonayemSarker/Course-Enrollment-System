@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { scrypt as _scrypt } from 'crypto';
@@ -51,14 +56,17 @@ export class AuthUserService {
     const hash = ((await scrypt(password, salt, 16)) as Buffer).toString();
 
     const user = await this.userService.findByEmail(email);
-    console.log(user);
+    // console.log(user);
+    if (user.password !== hash) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
 
-  async logout(userId: number) {
-    return await this.userService.update(userId, null);
+  logout(userId: number) {
+    return this.userService.updateToken(userId, null);
   }
 
   async getTokens(userId: number, email: string) {
@@ -72,7 +80,7 @@ export class AuthUserService {
         },
         {
           secret: JWT_SECRET_KEY,
-          expiresIn: '1h',
+          expiresIn: '1d',
         },
       ),
       this.jwtService.signAsync(
@@ -82,7 +90,7 @@ export class AuthUserService {
         },
         {
           secret: JWT_REFRESH_TOKEN,
-          expiresIn: '7d',
+          expiresIn: '100d',
         },
       ),
     ]);
@@ -95,13 +103,13 @@ export class AuthUserService {
 
   async updateRefreshToken(userId: number, refreshToken: string) {
     const hashedRefreshToken = await this.hashData(refreshToken);
-    await this.userService.update(userId, hashedRefreshToken);
+    await this.userService.updateToken(userId, hashedRefreshToken);
   }
 
   async refreshTokens(userId: number, refreshToken: string) {
     const user = await this.userService.findById(userId);
     if (!user || !user.refreshToken) {
-      throw new ForbiddenException('Access denied');
+      throw new BadRequestException('Access denied');
     }
     const refreshTokenMatches = await argon2.verify(
       user.refreshToken,

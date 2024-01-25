@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './teacher.entity';
 import { Repository } from 'typeorm';
@@ -18,15 +22,14 @@ export class TeacherService {
   async update(id: number, updateTeacher: UpdateTeacherDto) {
     const existingTeacher = await this.repo.findOneBy({ id: id });
     if (!existingTeacher) {
-      throw new NotFoundException('No Teacher found with id ' + { id });
+      throw new UnauthorizedException('No Teacher found with id ' + { id });
     }
-    await this.repo.merge(existingTeacher, updateTeacher);
+    this.repo.merge(existingTeacher, updateTeacher);
     return this.repo.save(existingTeacher);
   }
 
-  async findTeacher(id: number) {
-    const teacher = await this.repo.findOneBy({ id: id });
-    return teacher;
+  findTeacher(id: number) {
+    return this.repo.findOneBy({ id: id });
   }
 
   async setCourse(course: Course, id: number) {
@@ -35,16 +38,16 @@ export class TeacherService {
       relations: ['courses'],
     });
     if (!teacher) {
-      throw new NotFoundException('No Teacher found with id' + { id });
+      throw new UnauthorizedException('No Teacher found with id' + { id });
     }
     teacher.courses = teacher.courses || [];
     teacher.courses.push(course);
-    console.log(teacher);
+    // console.log(teacher);
 
     return this.repo.save(teacher);
   }
 
-  async findCourses(id: number): Promise<Course[]> {
+  async findTeacherCourses(id: number): Promise<Course[]> {
     const teacher = await this.repo.findOne({
       where: { id: id },
       relations: ['courses'],
@@ -52,7 +55,6 @@ export class TeacherService {
     if (!teacher) {
       throw new NotFoundException('No Teacher found with id' + { id });
     }
-    const courses = teacher.courses;
-    return courses;
+    return teacher.courses;
   }
 }

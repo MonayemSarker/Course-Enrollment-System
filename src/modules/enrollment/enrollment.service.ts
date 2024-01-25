@@ -16,13 +16,11 @@ export class EnrollmentService {
     return this.repo.find();
   }
 
-  async studentEnrollment(id: number): Promise<Enrollment[]> {
-    const enrollments = await this.repo.find({
+  getStudentEnrollments(id: number): Promise<Enrollment[]> {
+    return this.repo.find({
       relations: ['student', 'course'],
       where: { student: { id: id } },
     });
-
-    return enrollments;
   }
 
   async enroll(student: Student, course: Course) {
@@ -32,15 +30,14 @@ export class EnrollmentService {
     return this.repo.save(enrollment);
   }
 
-  async findEnrollment(course: Course) {
-    const enrollment = await this.repo.findOne({
+  findCourseEnrollments(course: Course) {
+    return this.repo.findOne({
       relations: ['student', 'course'],
       where: { course: { courseCode: course.courseCode } },
     });
-    return enrollment;
   }
 
-  async approve(approveEnrollmentDto: ApproveEnrollmentDto) {
+  async approveEnrollment(approveEnrollmentDto: ApproveEnrollmentDto) {
     const enrollment = await this.repo.findOne({
       where: { id: approveEnrollmentDto.id },
     });
@@ -49,7 +46,7 @@ export class EnrollmentService {
       throw new NotFoundException('No such enrollment found');
     }
 
-    await this.repo.merge(enrollment, approveEnrollmentDto);
+    this.repo.merge(enrollment, approveEnrollmentDto);
     return this.repo.save(enrollment);
   }
 }

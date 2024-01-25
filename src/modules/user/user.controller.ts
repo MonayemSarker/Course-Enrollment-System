@@ -9,7 +9,7 @@ import { RefreshTokenGuard } from './guard/refreshToken.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(
     private userService: UserService,
@@ -52,7 +52,7 @@ export class UserController {
   }
 
   @UseGuards(RefreshTokenGuard)
-  @Get('refresh')
+  @Get('refreshToken')
   refreshToken(@Req() req: Request) {
     // console.log(req.user);
 

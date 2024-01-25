@@ -4,23 +4,23 @@ import { Enrollment } from '../enrollment/enrollment.entity';
 @Entity()
 export class Student {
   @PrimaryColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  name: string;
+  public name: string;
 
   @Column()
-  email: string;
+  public email: string;
 
   @Column({ nullable: true })
-  phone: string;
+  public phone: string;
 
   @Column({ nullable: true })
-  level: number;
+  public level: number;
 
   @Column({ nullable: true })
-  grade: number;
+  public grade: number;
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
-  enrollments: Enrollment[];
+  public enrollments: Enrollment[];
 }

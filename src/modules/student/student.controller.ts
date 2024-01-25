@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
@@ -19,7 +20,7 @@ import { EnrollmentService } from '../enrollment/enrollment.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Student')
-@Controller('student')
+@Controller('students')
 export class StudentController {
   constructor(
     private studentService: StudentService,
@@ -34,10 +35,7 @@ export class StudentController {
     @Body()
     updateStudent: UpdateStudentDto,
   ) {
-    // console.log(updateStudent);
-
-    const updatedStudent = this.studentService.update(id, updateStudent);
-    return updatedStudent;
+    return this.studentService.update(id, updateStudent);
   }
 
   @UseGuards(AccessTokenGuard)
@@ -46,7 +44,7 @@ export class StudentController {
     const studentId = req.user['sub'];
     const student = await this.studentService.findStudent(parseInt(studentId));
     if (!student) {
-      throw new NotFoundException('Student not found');
+      throw new UnauthorizedException('Student not found');
     }
     const courses = await this.courseService.getPublishedCourses();
     if (courses.length == 0) {
@@ -64,16 +62,12 @@ export class StudentController {
     const studentId = req.user['sub'];
     const student = await this.studentService.findStudent(parseInt(studentId));
     if (!student) {
-      throw new NotFoundException('Student not found');
+      throw new UnauthorizedException('Student not found');
     }
     const course = await this.courseService.findPublishedCourse(courseCode);
     if (!course) {
       throw new NotFoundException('Course Not Available');
     }
-
-    const enrollment = await this.enrollmentService.enroll(student, course);
-    console.log(enrollment);
-
-    return enrollment;
+    return this.enrollmentService.enroll(student, course);
   }
 }

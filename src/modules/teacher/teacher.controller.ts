@@ -17,7 +17,7 @@ import { ApproveEnrollmentDto } from '../enrollment/dto/approve-enrollment.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Teacher')
-@Controller('teacher')
+@Controller('teachers')
 export class TeacherController {
   constructor(
     private teacherService: TeacherService,
@@ -28,7 +28,9 @@ export class TeacherController {
   @Get('enrollments')
   async getEnrollments(@Req() req: Request) {
     const teacherId = req.user['sub'];
-    const courses = await this.teacherService.findCourses(parseInt(teacherId));
+    const courses = await this.teacherService.findTeacherCourses(
+      parseInt(teacherId),
+    );
     // console.log('COURSES: ' + courses);
 
     const enrollments = [];
@@ -36,9 +38,9 @@ export class TeacherController {
 
     courses.forEach((course) => {
       const promise = this.enrollmentService
-        .findEnrollment(course)
+        .findCourseEnrollments(course)
         .then((enrollment) => {
-          console.log(enrollment);
+          // console.log(enrollment);
 
           if (enrollment != null) enrollments.push(enrollment);
         });
@@ -50,9 +52,8 @@ export class TeacherController {
 
   @UseGuards(AccessTokenGuard)
   @Patch('approve')
-  async approveEnrollment(@Body() body: ApproveEnrollmentDto) {
-    const enrollment = await this.enrollmentService.approve(body);
-    return enrollment;
+  approveEnrollment(@Body() body: ApproveEnrollmentDto) {
+    return this.enrollmentService.approveEnrollment(body);
   }
 
   @UseGuards(AccessTokenGuard)
@@ -62,7 +63,6 @@ export class TeacherController {
     @Body()
     updateTeacher: UpdateTeacherDto,
   ) {
-    const updatedTeacher = this.teacherService.update(id, updateTeacher);
-    return updatedTeacher;
+    return this.teacherService.update(id, updateTeacher);
   }
 }

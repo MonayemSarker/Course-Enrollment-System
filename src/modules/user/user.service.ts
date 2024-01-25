@@ -49,20 +49,7 @@ export class UserService {
     return this.repo.save(user);
   }
 
-  async login(email: string, password: string) {
-    const user = await this.repo.findOne({
-      where: { email: email },
-    });
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    if (user.password === password) {
-      return user;
-    }
-  }
-
-  async update(id: number, refreshToken: string) {
+  async updateToken(id: number, refreshToken: string) {
     const user = await this.repo.findOne({
       where: { id: id },
     });

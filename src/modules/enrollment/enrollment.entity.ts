@@ -11,19 +11,19 @@ import { Student } from '../student/student.entity';
 @Entity()
 export class Enrollment {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column({ default: false })
-  approved: boolean;
+  public approved: boolean;
 
   @Column({ default: null })
-  batch: string;
+  public batch: string;
 
   @ManyToOne(() => Student, (student) => student.enrollments)
   @JoinColumn({ name: 'StudentID' })
-  student: Student;
+  public student: Student;
 
   @ManyToOne(() => Course, (course) => course.enrollments)
   @JoinColumn({ name: 'CourseCode' })
-  course: Course;
+  public course: Course;
 }

@@ -12,24 +12,24 @@ import { Enrollment } from '../enrollment/enrollment.entity';
 @Entity()
 export class Course {
   @PrimaryColumn()
-  courseCode: number;
+  public courseCode: number;
 
   @Column()
-  courseName: string;
+  public courseName: string;
 
   @Column()
-  courseDescription: string;
+  public courseDescription: string;
 
   @Column()
-  credit: number;
+  public credit: number;
 
   @Column({ default: false })
-  isPublished: boolean;
+  public isPublished: boolean;
 
   @ManyToOne(() => Teacher, (teacher) => teacher.courses)
   @JoinColumn({ name: 'teacherId' })
-  teacher: Teacher;
+  public teacher: Teacher;
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
-  enrollments: Enrollment[];
+  public enrollments: Enrollment[];
 }

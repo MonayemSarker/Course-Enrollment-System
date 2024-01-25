@@ -3,32 +3,32 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column({
     nullable: false,
   })
-  name: string;
+  public name: string;
 
   @Column({
     unique: true,
     nullable: false,
   })
-  email: string;
+  public email: string;
 
   @Column({
     nullable: false,
   })
-  password: string;
+  public password: string;
 
   @Column({
     nullable: false,
   })
-  userType: string;
+  public userType: string;
 
   @Column({
     nullable: true,
     default: null,
   })
-  refreshToken: string;
+  public refreshToken: string;
 }

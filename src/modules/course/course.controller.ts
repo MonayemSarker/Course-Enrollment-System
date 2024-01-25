@@ -16,9 +16,10 @@ import { Request } from 'express';
 import { TeacherService } from '../teacher/teacher.service';
 import { PublishCourseDto } from './dto/publish-course.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Transaction } from 'typeorm';
 
 @ApiTags('Course')
-@Controller('course')
+@Controller('courses')
 export class CourseController {
   constructor(
     private courseService: CourseService,
@@ -26,11 +27,10 @@ export class CourseController {
   ) {}
 
   @UseGuards(AccessTokenGuard)
-  @Post('create')
+  @Post()
   async create(@Body() body: CreateCourseDto, @Req() req: Request) {
     const teacherId = req.user['sub'];
     const teacher = await this.teacherService.findTeacher(parseInt(teacherId));
-    // console.log(teacher);
 
     const course = await this.courseService.create(body, teacher);
     await this.teacherService.setCourse(course, parseInt(teacherId));
@@ -51,7 +51,7 @@ export class CourseController {
     // console.log(course.teacher.id);
 
     if (course.teacher.id != teacher.id) {
-      throw new UnauthorizedException('Teacher Has No Permission to Edit');
+      throw new UnauthorizedException('This teacher Has No Permission to Edit');
     }
     await this.courseService.publish(course, body);
   }

@@ -19,40 +19,32 @@ export class CourseService {
     newCourse.isPublished = false;
     newCourse.teacher = teacher;
 
-    // console.log(newCourse);
-
     return this.repo.save(newCourse);
   }
 
-  async findCourse(id: number) {
-    const course = await this.repo.findOne({
+  findCourse(id: number) {
+    return this.repo.findOne({
       where: { courseCode: id },
       relations: ['teacher'],
     });
-
-    // console.log('course', course);
-
-    return course;
   }
 
-  async findPublishedCourse(id: number) {
-    const course = await this.repo.findOne({
+  findPublishedCourse(id: number) {
+    return this.repo.findOne({
       where: { courseCode: id, isPublished: true },
       relations: ['teacher'],
     });
-    return course;
   }
 
-  async publish(course: Course, publishDto: PublishCourseDto) {
-    await this.repo.merge(course, publishDto);
+  publish(course: Course, publishDto: PublishCourseDto) {
+    this.repo.merge(course, publishDto);
     return this.repo.save(course);
   }
 
-  async getPublishedCourses() {
-    const courses = await this.repo.find({
+  getPublishedCourses() {
+    return this.repo.find({
       where: { isPublished: true },
       relations: ['teacher'],
     });
-    return courses;
   }
 }
