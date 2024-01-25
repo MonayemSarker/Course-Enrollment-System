@@ -34,15 +34,8 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Get('signout')
   logout(@Req() req: Request) {
-    console.log('helloo');
-
     this.authService.logout(req.user['sub']);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id', ParseIntPipe) id: string) {
-  //   return this.userService.findOne(id);
-  // }
 
   @UseGuards(AccessTokenGuard)
   @Get('whoAmI')

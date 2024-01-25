@@ -54,7 +54,7 @@ export class UserService {
       where: { id: id },
     });
     user.refreshToken = refreshToken;
-    return this.repo.save(user);
+    await this.repo.save(user);
   }
 
   async findById(id: number) {

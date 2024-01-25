@@ -13,7 +13,12 @@ export class EnrollmentService {
   ) {}
 
   findAll(): Promise<Enrollment[]> {
-    return this.repo.find();
+    return this.repo.find({
+      relations: {
+        course: true,
+        student: true,
+      },
+    });
   }
 
   getStudentEnrollments(id: number): Promise<Enrollment[]> {
