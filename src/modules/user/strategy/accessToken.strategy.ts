@@ -5,6 +5,7 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 type jwtPayload = {
   sub: string;
   email: string;
+  userType: string;
 };
 
 const JWT_SECRET_KEY = 'ABCDEFGHIJ';

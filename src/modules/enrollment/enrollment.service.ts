@@ -54,4 +54,32 @@ export class EnrollmentService {
     this.repo.merge(enrollment, approveEnrollmentDto);
     return this.repo.save(enrollment);
   }
+
+  async getTeachersEnrollments(courses: Course[]) {
+    const enrollments = [];
+    const promises = [];
+
+    courses.forEach((course) => {
+      const promise = this.findCourseEnrollments(course).then((enrollment) => {
+        if (enrollment != null) enrollments.push(enrollment);
+      });
+      promises.push(promise);
+    });
+    await Promise.all(promises);
+    return enrollments;
+  }
+
+  async getTeachersEnrollmentsID(courses: Course[]) {
+    const enrollments = [];
+    const promises = [];
+
+    courses.forEach((course) => {
+      const promise = this.findCourseEnrollments(course).then((enrollment) => {
+        if (enrollment != null) enrollments.push(enrollment.id);
+      });
+      promises.push(promise);
+    });
+    await Promise.all(promises);
+    return enrollments;
+  }
 }

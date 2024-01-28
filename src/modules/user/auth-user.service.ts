@@ -33,7 +33,11 @@ export class AuthUserService {
     userDto.password = hash;
     const newUser = await this.userService.create(userDto);
 
-    const tokens = await this.getTokens(newUser.id, newUser.email);
+    const tokens = await this.getTokens(
+      newUser.id,
+      newUser.email,
+      newUser.userType,
+    );
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
 
     if (newUser.userType === 'Teacher') {
@@ -60,7 +64,7 @@ export class AuthUserService {
     if (user.password !== hash) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user.id, user.email, user.userType);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -69,7 +73,7 @@ export class AuthUserService {
     return this.userService.updateToken(userId, null);
   }
 
-  async getTokens(userId: number, email: string) {
+  async getTokens(userId: number, email: string, userType: string) {
     const JWT_SECRET_KEY = 'ABCDEFGHIJ';
     const JWT_REFRESH_TOKEN = 'This should be random token';
     const [accesstoken, refreshToken] = await Promise.all([
@@ -77,6 +81,7 @@ export class AuthUserService {
         {
           sub: userId,
           email: email,
+          type: userType,
         },
         {
           secret: JWT_SECRET_KEY,
@@ -87,6 +92,7 @@ export class AuthUserService {
         {
           sub: userId,
           email: email,
+          type: userType,
         },
         {
           secret: JWT_REFRESH_TOKEN,
@@ -117,7 +123,7 @@ export class AuthUserService {
     );
 
     if (!refreshTokenMatches) throw new ForbiddenException('Access denied');
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user.id, user.email, user.userType);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }

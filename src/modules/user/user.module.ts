@@ -9,6 +9,7 @@ import { AccessTokenStrategy } from './strategy/accesstoken.strategy';
 import { RefreshTokenStrategy } from './strategy/refreshtoken.strategy';
 import { TeacherModule } from '../teacher/teacher.module';
 import { StudentModule } from '../student/student.module';
+import { UserPublicController } from './user.public.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { StudentModule } from '../student/student.module';
     TeacherModule,
     StudentModule,
   ],
-  controllers: [UserController],
+  controllers: [UserController, UserPublicController],
   providers: [
     UserService,
     AuthUserService,

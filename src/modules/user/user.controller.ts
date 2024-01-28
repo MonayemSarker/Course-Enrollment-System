@@ -6,7 +6,7 @@ import { AuthUserService } from './auth-user.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from './guard/accessToken.guard';
 import { RefreshTokenGuard } from './guard/refreshToken.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')
 @Controller('users')
@@ -16,19 +16,10 @@ export class UserController {
     private authService: AuthUserService,
   ) {}
 
+  @UseGuards(AccessTokenGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
-  }
-
-  @Post('signup')
-  create(@Body() body: CreateUserDto) {
-    return this.authService.create(body);
-  }
-
-  @Post('signin')
-  login(@Body() body: SignInDto) {
-    return this.authService.login(body.email, body.password);
   }
 
   @UseGuards(AccessTokenGuard)
@@ -39,7 +30,7 @@ export class UserController {
 
   @UseGuards(AccessTokenGuard)
   @Get('whoAmI')
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   isLoggedIn(@Req() req: Request) {
     return req.user;
   }

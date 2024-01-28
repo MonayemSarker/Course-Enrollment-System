@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -21,6 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Student')
 @Controller('students')
+@UseGuards(AccessTokenGuard)
 export class StudentController {
   constructor(
     private studentService: StudentService,
@@ -28,7 +28,6 @@ export class StudentController {
     private enrollmentService: EnrollmentService,
   ) {}
 
-  @UseGuards(AccessTokenGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -38,32 +37,18 @@ export class StudentController {
     return this.studentService.update(id, updateStudent);
   }
 
-  @UseGuards(AccessTokenGuard)
-  @Get('courses')
-  async getAvailableCourses(@Req() req: Request) {
-    const studentId = req.user['sub'];
-    const student = await this.studentService.findStudent(parseInt(studentId));
-    if (!student) {
-      throw new UnauthorizedException('Student not found');
-    }
-    const courses = await this.courseService.getPublishedCourses();
-    if (courses.length == 0) {
-      return [];
-    }
-    return courses;
-  }
-
-  @UseGuards(AccessTokenGuard)
   @Post('enroll/:courseCode')
   async enroll(
     @Param('courseCode', ParseIntPipe) courseCode: number,
     @Req() req: Request,
   ) {
-    const studentId = req.user['sub'];
-    const student = await this.studentService.findStudent(parseInt(studentId));
-    if (!student) {
+    if (req.user['type'] !== 'Student') {
       throw new UnauthorizedException('Student not found');
     }
+    const student = await this.studentService.findStudent(
+      parseInt(req.user['sub']),
+    );
+
     const course = await this.courseService.findPublishedCourse(courseCode);
     if (!course) {
       throw new NotFoundException('Course Not Available');
