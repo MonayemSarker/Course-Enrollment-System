@@ -8,6 +8,7 @@ import { CourseModule } from './modules/course/course.module';
 import { EnrollmentModule } from './modules/enrollment/enrollment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './modules/user/user.entity';
+import { dataSourceOption } from './db/db.config';
 
 @Module({
   imports: [
@@ -16,16 +17,7 @@ import { User } from './modules/user/user.entity';
     StudentModule,
     CourseModule,
     EnrollmentModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql', // Use 'mysql' for MySQL
-      host: '127.0.0.1',
-      port: 3306, // Default MySQL port
-      username: 'root',
-      password: 'admin',
-      database: 'ces',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot(dataSourceOption),
   ],
   controllers: [AppController],
   providers: [AppService],
