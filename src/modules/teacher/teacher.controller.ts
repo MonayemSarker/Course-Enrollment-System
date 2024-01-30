@@ -11,9 +11,11 @@ import {
 import { TeacherService } from './teacher.service';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { AccessTokenGuard } from '../user/guard/accessToken.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiTags('Teacher')
+@ApiBearerAuth()
 @UseGuards(AccessTokenGuard)
 @Controller('teachers')
 export class TeacherController {
@@ -26,5 +28,10 @@ export class TeacherController {
     updateTeacher: UpdateTeacherDto,
   ) {
     return this.teacherService.update(id, updateTeacher);
+  }
+
+  @Get('experiment')
+  experiment(@Req() req: Request) {
+    return this.teacherService.experiment(parseInt(req.user['sub']));
   }
 }

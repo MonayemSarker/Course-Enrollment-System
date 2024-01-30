@@ -5,10 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './teacher.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { Course } from '../course/course.entity';
+import dataSource from 'src/db/db.config';
 
 @Injectable()
 export class TeacherService {
@@ -56,5 +57,37 @@ export class TeacherService {
       throw new NotFoundException('No Teacher found with id' + { id });
     }
     return teacher.courses;
+  }
+
+  async experiment(id: number) {
+    // console.log(id);
+    await dataSource.initialize();
+
+    const teacher = await dataSource
+      .getRepository(Teacher)
+      .createQueryBuilder('teacher') // alias
+      .where('teacher.id = :id', { id: id })
+      .getOne();
+
+    console.log('Q1:---' + teacher);
+
+    //another way
+    const teacher2 = await dataSource
+      .createQueryBuilder()
+      .select('teacher')
+      .from(Teacher, 'teacher')
+      .where('teacher.id = :id', { id: id })
+      .getMany();
+    console.log('Q2:---' + teacher2);
+
+    //another way
+    const teacher3 = await dataSource.manager
+      .createQueryBuilder(Teacher, 'user')
+      .where('user.id = :id', { id: id })
+      .getOne();
+
+    console.log('Q3:---' + teacher3);
+
+    //realations
   }
 }

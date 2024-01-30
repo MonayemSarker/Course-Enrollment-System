@@ -17,11 +17,12 @@ import { AccessTokenGuard } from '../user/guard/accessToken.guard';
 import { Request } from 'express';
 import { TeacherService } from '../teacher/teacher.service';
 import { PublishCourseDto } from './dto/publish-course.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Course')
 @Controller('courses')
 @UseGuards(AccessTokenGuard)
+@ApiBearerAuth()
 export class CourseController {
   constructor(
     private courseService: CourseService,

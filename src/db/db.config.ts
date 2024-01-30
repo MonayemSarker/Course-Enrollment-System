@@ -7,8 +7,8 @@ export const dataSourceOption: DataSourceOptions = {
   username: 'root',
   password: 'admin',
   database: 'ces',
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/**/*.migrations{.ts,.js}'],
+  entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  migrations: ['dist/**/*.migrations.js'],
   synchronize: true,
 };
 

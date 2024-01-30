@@ -6,9 +6,10 @@ import { AuthUserService } from './auth-user.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from './guard/accessToken.guard';
 import { RefreshTokenGuard } from './guard/refreshToken.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(

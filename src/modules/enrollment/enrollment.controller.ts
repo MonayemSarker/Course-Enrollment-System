@@ -10,12 +10,13 @@ import {
 import { EnrollmentService } from './enrollment.service';
 import { Request } from 'express';
 import { AccessTokenGuard } from '../user/guard/accessToken.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TeacherService } from '../teacher/teacher.service';
 import { ApproveEnrollmentDto } from './dto/approve-enrollment.dto';
 
 @ApiTags('Enrollment')
 @UseGuards(AccessTokenGuard)
+@ApiBearerAuth()
 @Controller('enrollments')
 export class EnrollmentController {
   constructor(
