@@ -64,89 +64,98 @@ export class TeacherService {
     // console.log(id);
     await dataSource.initialize();
 
-    const teacher = await dataSource
-      .getRepository(Teacher)
-      .createQueryBuilder('teacher') // alias
-      .where('teacher.id = :id', { id: id })
-      .getOne();
+    const queryRunner = dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const teacher = await dataSource
+        .getRepository(Teacher)
+        .createQueryBuilder('teacher') // alias
+        .where('teacher.id = :id', { id: id })
+        .getOne();
 
-    // console.log('Q1:---' + teacher);
+      // console.log('Q1:---' + teacher);
 
-    //another way
-    const teacher2 = await dataSource
-      .createQueryBuilder()
-      .select('teacher')
-      .from(Teacher, 'teacher')
-      .where('teacher.id = :id', { id: id })
-      .getMany();
-    // console.log('Q2:---' + teacher2);
+      //another way
+      const teacher2 = await dataSource
+        .createQueryBuilder()
+        .select('teacher')
+        .from(Teacher, 'teacher')
+        .where('teacher.id = :id', { id: id })
+        .getMany();
+      // console.log('Q2:---' + teacher2);
 
-    //another way
-    const teacher3 = await dataSource.manager
-      .createQueryBuilder(Teacher, 'user')
-      .where('user.id = :id', { id: id })
-      .getOne();
+      //another way
+      const teacher3 = await dataSource.manager
+        .createQueryBuilder(Teacher, 'user')
+        .where('user.id = :id', { id: id })
+        .getOne();
 
-    // console.log('Q3:---' + teacher3);
+      // console.log('Q3:---' + teacher3);
 
-    //realations
-    const courses = await dataSource
-      .createQueryBuilder()
-      .relation(Teacher, 'courses')
-      .of(id)
-      .loadMany();
+      //realations
+      const courses = await dataSource
+        .createQueryBuilder()
+        .relation(Teacher, 'courses')
+        .of(id)
+        .loadMany();
 
-    // console.log('Q4:---' + courses);
+      // console.log('Q4:---' + courses);
 
-    //getOneOrFail
-    const teacher4 = await dataSource
-      .getRepository(Teacher)
-      .createQueryBuilder('teacher')
-      .where('teacher.id = :id', { id: 7 })
-      .getOneOrFail();
+      //getOneOrFail
+      const teacher4 = await dataSource
+        .getRepository(Teacher)
+        .createQueryBuilder('teacher')
+        .where('teacher.id = :id', { id: 1 })
+        .getOneOrFail();
 
-    // console.log('Q5:---' + teacher4);
+      // console.log('Q5:---' + teacher4);
 
-    //count groupby having
-    const countCourse = await dataSource
-      .getRepository(Course)
-      .createQueryBuilder('courses')
-      .select('COUNT(courses.courseCode)', 'Total courses')
-      .groupBy('courses.teacherId')
-      .having('courses.teacherId = :teacherId', { teacherId: 7 })
-      .getRawMany();
+      //count groupby having
+      const countCourse = await dataSource
+        .getRepository(Course)
+        .createQueryBuilder('courses')
+        .select('COUNT(courses.courseCode)', 'Total courses')
+        .groupBy('courses.teacherId')
+        .having('courses.teacherId = :teacherId', { teacherId: 7 })
+        .getRawMany();
 
-    // console.log('Q6:---' + countCourse);
+      // console.log('Q6:---' + countCourse);
 
-    // using brackets
-    const course = await dataSource
-      .createQueryBuilder(Enrollment, 'e')
-      .where('e.approved = :approved', { approved: false })
-      .andWhere(
-        new Brackets((qb) => {
-          qb.where('e.batch = :batch1', { batch1: 'A' }).orWhere(
-            'e.courseCode = :code',
-            { code: 123 },
-          );
-        }),
-      )
-      // .offset(5)
-      // .limit(10)
-      .getMany();
+      // using brackets
+      const course = await dataSource
+        .createQueryBuilder(Enrollment, 'e')
+        .where('e.approved = :approved', { approved: false })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('e.batch = :batch1', { batch1: 'A' }).orWhere(
+              'e.courseCode = :code',
+              { code: 123 },
+            );
+          }),
+        )
+        // .offset(5)
+        // .limit(10)
+        .getMany();
 
-    const teacherCourse = await dataSource
-      .createQueryBuilder(Teacher, 't')
-      .innerJoinAndSelect('t.courses', 'courses') //auto ON
-      // .where('t.id = course.teacherId')
-      .getMany();
+      const teacherCourse = await dataSource
+        .createQueryBuilder(Teacher, 't')
+        .innerJoinAndSelect('t.courses', 'courses') //auto ON
+        // .where('t.id = course.teacherId')
+        .getMany();
 
-    const courseTeacher = await dataSource
-      .createQueryBuilder(Course, 'c')
-      .leftJoinAndSelect('c.teacher', 't')
-      // .where('c.teacherId = t.id')
-      .getMany();
+      const courseTeacher = await dataSource
+        .createQueryBuilder(Course, 'c')
+        .leftJoinAndSelect('c.teacher', 't')
+        // .where('c.teacherId = t.id')
+        .getMany();
 
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      queryRunner.release();
+    }
     await dataSource.destroy();
-    return courseTeacher;
   }
 }
