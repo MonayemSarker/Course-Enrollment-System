@@ -8,6 +8,7 @@ import { CourseModule } from './modules/course/course.module';
 import { EnrollmentModule } from './modules/enrollment/enrollment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOption } from './db/db.config';
+import { DemoMigrationModule } from './modules/demo-migration/demo-migration.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { dataSourceOption } from './db/db.config';
     CourseModule,
     EnrollmentModule,
     TypeOrmModule.forRoot(dataSourceOption),
+    DemoMigrationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
