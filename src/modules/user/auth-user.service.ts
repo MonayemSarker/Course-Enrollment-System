@@ -60,13 +60,19 @@ export class AuthUserService {
     const hash = ((await scrypt(password, salt, 16)) as Buffer).toString();
 
     const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException('No user found with this email');
+    }
     // console.log(user);
     if (user.password !== hash) {
       throw new UnauthorizedException('Invalid credentials');
     }
     const tokens = await this.getTokens(user.id, user.email, user.userType);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+    return {
+      userType: user.userType,
+      tokens: tokens,
+    };
   }
 
   logout(userId: number) {

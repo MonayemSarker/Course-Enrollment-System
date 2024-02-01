@@ -34,4 +34,9 @@ export class TeacherController {
   experiment(@Req() req: Request) {
     return this.teacherService.experiment(parseInt(req.user['sub']));
   }
+
+  @Get('courses')
+  async teacherCourses(@Req() req: Request) {
+    return this.teacherService.findTeacherCourses(parseInt(req.user['sub']));
+  }
 }

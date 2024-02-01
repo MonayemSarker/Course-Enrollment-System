@@ -11,6 +11,7 @@ export class UserPublicController {
 
   @Post('signup')
   create(@Body() body: CreateUserDto) {
+    console.log(body);
     return this.authService.create(body);
   }
 

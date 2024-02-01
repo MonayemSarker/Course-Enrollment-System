@@ -11,6 +11,9 @@ export class CourseService {
   constructor(@InjectRepository(Course) private repo: Repository<Course>) {}
 
   create(courseDto: CreateCourseDto, teacher: Teacher) {
+    console.log('Dto ' + courseDto);
+    console.log('Teacher ' + teacher);
+
     const newCourse = new Course();
     newCourse.courseCode = courseDto.courseCode;
     newCourse.courseName = courseDto.courseName;

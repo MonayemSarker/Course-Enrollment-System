@@ -42,7 +42,7 @@ export class UserService {
     });
 
     if (alreadyExistUser) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('Email already exists');
     }
     const user = await this.repo.create(userDto);
 

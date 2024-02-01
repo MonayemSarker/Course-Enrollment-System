@@ -32,6 +32,9 @@ export class CourseController {
   @Post()
   async create(@Body() body: CreateCourseDto, @Req() req: Request) {
     const teacherId = req.user['sub'];
+    // console.log('token id ' + teacherId);
+    console.log(body);
+
     const teacher = await this.teacherService.findTeacher(parseInt(teacherId));
 
     const course = await this.courseService.create(body, teacher);
