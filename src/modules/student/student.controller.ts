@@ -50,7 +50,7 @@ export class StudentController {
       parseInt(req.user['sub']),
     );
 
-    const course = await this.courseService.findPublishedCourse(courseCode);
+    const course = await this.courseService.findIfPublishedCourse(courseCode);
     if (!course) {
       throw new NotFoundException('Course Not Available');
     }

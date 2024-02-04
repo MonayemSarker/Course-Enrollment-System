@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './course.entity';
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { Teacher } from '../teacher/teacher.entity';
 import { PublishCourseDto } from './dto/publish-course.dto';
+import { Enrollment } from '../enrollment/enrollment.entity';
 
 @Injectable()
 export class CourseService {
@@ -32,9 +33,23 @@ export class CourseService {
     });
   }
 
-  findPublishedCourse(id: number) {
+  findIfPublishedCourse(id: number) {
     return this.repo.findOne({
       where: { courseCode: id, isPublished: true },
+      relations: ['teacher'],
+    });
+  }
+
+  async getPublishedCourseAndStudentNotEnrolled(
+    enrollments: Enrollment[],
+  ): Promise<Course[]> {
+    return await this.repo.find({
+      where: {
+        courseCode: Not(
+          In(enrollments.map((enrollment) => enrollment.course.courseCode)),
+        ),
+        isPublished: true,
+      },
       relations: ['teacher'],
     });
   }

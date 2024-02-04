@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -18,6 +19,7 @@ import { Request } from 'express';
 import { TeacherService } from '../teacher/teacher.service';
 import { PublishCourseDto } from './dto/publish-course.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { EnrollmentService } from '../enrollment/enrollment.service';
 
 @ApiTags('Course')
 @Controller('courses')
@@ -27,6 +29,7 @@ export class CourseController {
   constructor(
     private courseService: CourseService,
     private teacherService: TeacherService,
+    private enrollmentService: EnrollmentService,
   ) {}
 
   @Post()
@@ -42,7 +45,7 @@ export class CourseController {
     return course;
   }
 
-  @Patch('publish/:courseId')
+  @Put('publish/:courseId')
   async publish(
     @Param('courseId', ParseIntPipe) id: number,
     @Body() body: PublishCourseDto,
@@ -58,12 +61,35 @@ export class CourseController {
       throw new UnauthorizedException('This teacher has no Permission to Edit');
     }
     await this.courseService.publish(course, body);
+    return course;
   }
 
   @Get('published')
   async getPublishedCourses(@Req() req: Request) {
     if (req.user['type'] == 'Student') {
       const courses = await this.courseService.getPublishedCourses();
+      if (courses.length == 0) {
+        return [];
+      }
+      return courses;
+    } else {
+      throw new BadRequestException('User is not a student');
+    }
+  }
+
+  @Get('published-not-enrolled')
+  async getPublishedNotEnrolledCourses(@Req() req: Request) {
+    if (req.user['type'] == 'Student') {
+      const enrollments = await this.enrollmentService.getStudentEnrollments(
+        parseInt(req.user['sub']),
+      );
+      if (enrollments.length == 0) {
+        return [];
+      }
+      const courses =
+        await this.courseService.getPublishedCourseAndStudentNotEnrolled(
+          enrollments,
+        );
       if (courses.length == 0) {
         return [];
       }
