@@ -26,7 +26,7 @@ export class Course {
   @Column({ default: false })
   public isPublished: boolean;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.courses)
+  @ManyToOne(() => Teacher, (teacher) => teacher.courses, { cascade: true })
   @JoinColumn({ name: 'teacherId' })
   public teacher: Teacher;
 

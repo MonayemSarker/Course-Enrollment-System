@@ -19,11 +19,11 @@ export class Enrollment {
   @Column({ default: null })
   public batch: string;
 
-  @ManyToOne(() => Student, (student) => student.enrollments)
+  @ManyToOne(() => Student, (student) => student.enrollments, { cascade: true })
   @JoinColumn({ name: 'StudentID' })
   public student: Student;
 
-  @ManyToOne(() => Course, (course) => course.enrollments)
+  @ManyToOne(() => Course, (course) => course.enrollments, { cascade: true })
   @JoinColumn({ name: 'CourseCode' })
   public course: Course;
 }

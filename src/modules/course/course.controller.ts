@@ -34,6 +34,9 @@ export class CourseController {
 
   @Post()
   async create(@Body() body: CreateCourseDto, @Req() req: Request) {
+    if (req.user['type'] !== 'Teacher') {
+      throw new UnauthorizedException('User is not a Teacher');
+    }
     const teacherId = req.user['sub'];
     // console.log('token id ' + teacherId);
     console.log(body);
@@ -41,7 +44,7 @@ export class CourseController {
     const teacher = await this.teacherService.findTeacher(parseInt(teacherId));
 
     const course = await this.courseService.create(body, teacher);
-    await this.teacherService.setCourse(course, parseInt(teacherId));
+    // await this.teacherService.setCourse(course, parseInt(teacherId));
     return course;
   }
 
